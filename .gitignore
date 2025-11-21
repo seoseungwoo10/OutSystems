@@ -12,3 +12,5 @@ dist/
 coverage/
 build/
 
+# batch files
+start_*.bat

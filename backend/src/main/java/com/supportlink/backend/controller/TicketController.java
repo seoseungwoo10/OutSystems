@@ -4,6 +4,8 @@ import com.supportlink.backend.domain.*;
 import com.supportlink.backend.dto.ReplyRequest;
 import com.supportlink.backend.dto.TicketCreateRequest;
 import com.supportlink.backend.dto.TicketUpdateRequest;
+import com.supportlink.backend.dto.TicketResponse;
+import com.supportlink.backend.dto.TicketReplyResponse;
 import com.supportlink.backend.repository.AgentRepository;
 import com.supportlink.backend.repository.UserRepository;
 import com.supportlink.backend.service.TicketService;
@@ -44,9 +46,9 @@ public class TicketController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "생성 성공")
     })
-    public ResponseEntity<?> createTicket(@RequestBody TicketCreateRequest request, Authentication authentication) {
+    public ResponseEntity<TicketResponse> createTicket(@RequestBody TicketCreateRequest request, Authentication authentication) {
         if (isAdminOrAgent(authentication)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Agents cannot create tickets");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         User user = userRepository.findByEmail(authentication.getName())
@@ -60,7 +62,8 @@ public class TicketController {
         ticket.setStatus(Ticket.Status.NEW);
         ticket.setPriority(Ticket.Priority.valueOf(request.getPriority().toUpperCase()));
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(ticketService.createTicket(ticket));
+        Ticket created = ticketService.createTicket(ticket);
+        return ResponseEntity.status(HttpStatus.CREATED).body(TicketResponse.from(created));
     }
 
     @GetMapping
@@ -69,17 +72,23 @@ public class TicketController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공")
     })
-    public ResponseEntity<List<Ticket>> getTickets(
+    public ResponseEntity<List<TicketResponse>> getTickets(
             @Parameter(description = "상태 필터") @RequestParam(required = false) String status,
             @Parameter(description = "담당자 ID 필터 (상담원 전용)") @RequestParam(required = false) Long assignee,
             Authentication authentication) {
         if (isAdminOrAgent(authentication)) {
             Ticket.Status ticketStatus = status != null ? Ticket.Status.valueOf(status.toUpperCase()) : null;
-            return ResponseEntity.ok(ticketService.getAllTickets(ticketStatus, assignee));
+            List<TicketResponse> responses = ticketService.getAllTickets(ticketStatus, assignee).stream()
+                    .map(TicketResponse::from)
+                    .toList();
+            return ResponseEntity.ok(responses);
         } else {
             User user = userRepository.findByEmail(authentication.getName())
                     .orElseThrow(() -> new RuntimeException("User not found"));
-            return ResponseEntity.ok(ticketService.getTicketsForUser(user));
+            List<TicketResponse> responses = ticketService.getTicketsForUser(user).stream()
+                    .map(TicketResponse::from)
+                    .toList();
+            return ResponseEntity.ok(responses);
         }
     }
 
@@ -89,7 +98,7 @@ public class TicketController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공")
     })
-    public ResponseEntity<?> getTicket(@PathVariable Long id, Authentication authentication) {
+    public ResponseEntity<TicketResponse> getTicket(@PathVariable Long id, Authentication authentication) {
         Ticket ticket = ticketService.getTicket(id);
         if (!isAdminOrAgent(authentication)) {
             User user = userRepository.findByEmail(authentication.getName())
@@ -98,7 +107,7 @@ public class TicketController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
         }
-        return ResponseEntity.ok(ticket);
+        return ResponseEntity.ok(TicketResponse.from(ticket));
     }
 
     @PatchMapping("/{id}")
@@ -107,7 +116,7 @@ public class TicketController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공")
     })
-    public ResponseEntity<?> updateTicket(@PathVariable Long id, @RequestBody TicketUpdateRequest request,
+    public ResponseEntity<TicketResponse> updateTicket(@PathVariable Long id, @RequestBody TicketUpdateRequest request,
             Authentication authentication) {
         if (!isAdminOrAgent(authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -126,7 +135,8 @@ public class TicketController {
             ticket.setAssignedAgent(agent);
         }
 
-        return ResponseEntity.ok(ticketService.updateTicket(ticket));
+        Ticket updated = ticketService.updateTicket(ticket);
+        return ResponseEntity.ok(TicketResponse.from(updated));
     }
 
     @GetMapping("/{id}/replies")
@@ -135,8 +145,11 @@ public class TicketController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공")
     })
-    public ResponseEntity<List<TicketReply>> getReplies(@PathVariable Long id) {
-        return ResponseEntity.ok(ticketService.getReplies(id));
+    public ResponseEntity<List<TicketReplyResponse>> getReplies(@PathVariable Long id) {
+        List<TicketReplyResponse> responses = ticketService.getReplies(id).stream()
+                .map(TicketReplyResponse::from)
+                .toList();
+        return ResponseEntity.ok(responses);
     }
 
     @PostMapping("/{id}/replies")
@@ -145,7 +158,7 @@ public class TicketController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "생성 성공")
     })
-    public ResponseEntity<?> createReply(@PathVariable Long id, @RequestBody ReplyRequest request,
+    public ResponseEntity<TicketReplyResponse> createReply(@PathVariable Long id, @RequestBody ReplyRequest request,
             Authentication authentication) {
         Ticket ticket = ticketService.getTicket(id);
         boolean isAgent = isAdminOrAgent(authentication);
@@ -158,7 +171,6 @@ public class TicketController {
             authorId = agent.getAgentId();
             authorType = TicketReply.AuthorType.AGENT;
 
-            // Auto-change status if needed (e.g., New -> Open)
             if (ticket.getStatus() == Ticket.Status.NEW) {
                 ticket.setStatus(Ticket.Status.OPEN);
                 ticketService.updateTicket(ticket);
@@ -179,7 +191,8 @@ public class TicketController {
         reply.setAuthorId(authorId);
         reply.setAuthorType(authorType);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(ticketService.createReply(reply));
+        TicketReply created = ticketService.createReply(reply);
+        return ResponseEntity.status(HttpStatus.CREATED).body(TicketReplyResponse.from(created));
     }
 
     private boolean isAdminOrAgent(Authentication authentication) {
