@@ -1,0 +1,6 @@
+user_id,email,name,password_hash,created_at
+1,user1@example.com,Alice Kim,$2a$10$EblZqNptyYpD.aO/Vj.jYO/v.h/j.j/j.j/j.j/j.j/j.j/j,2025-11-01 10:00:00
+2,user2@example.com,Bob Lee,$2a$10$EblZqNptyYpD.aO/Vj.jYO/v.h/j.j/j.j/j.j/j.j/j.j/j,2025-11-02 11:30:00
+3,user3@example.com,Charlie Park,$2a$10$EblZqNptyYpD.aO/Vj.jYO/v.h/j.j/j.j/j.j/j.j/j.j/j,2025-11-03 09:15:00
+4,user4@example.com,David Choi,$2a$10$EblZqNptyYpD.aO/Vj.jYO/v.h/j.j/j.j/j.j/j.j/j.j/j,2025-11-04 14:20:00
+5,user5@example.com,Eve Jung,$2a$10$EblZqNptyYpD.aO/Vj.jYO/v.h/j.j/j.j/j.j/j.j/j.j/j,2025-11-05 16:45:00

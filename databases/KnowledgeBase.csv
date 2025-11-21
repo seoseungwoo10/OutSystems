@@ -1,0 +1,6 @@
+article_id,category,title,content,author_id,view_count
+1,General,How to reset password?,To reset your password, go to settings and click reset.,1,150
+2,Billing,How to update billing info?,Go to the billing section in your profile.,1,85
+3,Technical,Connection issues troubleshooting,Check your internet connection and try again.,2,200
+4,General,Account deletion policy,You can delete your account from the privacy settings.,1,45
+5,Billing,Refund policy,Refunds are processed within 5-7 business days.,2,120

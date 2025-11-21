@@ -1,0 +1,4 @@
+agent_id,email,name,password_hash,role
+1,admin@supportlink.com,Admin User,$2a$10$EblZqNptyYpD.aO/Vj.jYO/v.h/j.j/j.j/j.j/j.j/j.j/j,Admin
+2,agent1@supportlink.com,Agent Smith,$2a$10$EblZqNptyYpD.aO/Vj.jYO/v.h/j.j/j.j/j.j/j.j/j.j/j,Agent
+3,agent2@supportlink.com,Agent Doe,$2a$10$EblZqNptyYpD.aO/Vj.jYO/v.h/j.j/j.j/j.j/j.j/j.j/j,Agent
