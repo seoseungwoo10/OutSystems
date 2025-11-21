@@ -60,7 +60,7 @@ public class FaqController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "생성 성공")
     })
-    public ResponseEntity<KnowledgeBase> createFaq(@RequestBody FaqRequest request, Authentication authentication) {
+    public ResponseEntity<FaqResponse> createFaq(@RequestBody FaqRequest request, Authentication authentication) {
         String email = authentication.getName();
         Agent author = agentRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Agent not found"));
@@ -71,16 +71,18 @@ public class FaqController {
         faq.setCategory(request.getCategory());
         faq.setAuthor(author);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(knowledgeBaseService.createFaq(faq));
+        KnowledgeBase savedFaq = knowledgeBaseService.createFaq(faq);
+        return ResponseEntity.status(HttpStatus.CREATED).body(FaqResponse.from(savedFaq));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<KnowledgeBase> updateFaq(@PathVariable Long id, @RequestBody FaqRequest request) {
+    public ResponseEntity<FaqResponse> updateFaq(@PathVariable Long id, @RequestBody FaqRequest request) {
         KnowledgeBase faqDetails = new KnowledgeBase();
         faqDetails.setTitle(request.getTitle());
         faqDetails.setContent(request.getContent());
         faqDetails.setCategory(request.getCategory());
-        return ResponseEntity.ok(knowledgeBaseService.updateFaq(id, faqDetails));
+        KnowledgeBase updatedFaq = knowledgeBaseService.updateFaq(id, faqDetails);
+        return ResponseEntity.ok(FaqResponse.from(updatedFaq));
     }
 
     @DeleteMapping("/{id}")

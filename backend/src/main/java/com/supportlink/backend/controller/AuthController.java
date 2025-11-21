@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import com.supportlink.backend.dto.UserResponse;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -55,7 +56,7 @@ public class AuthController {
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         User savedUser = userRepository.save(user);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(UserResponse.from(savedUser));
     }
 
     @PostMapping("/login")
