@@ -1,0 +1,32 @@
+# REST API INFORMATION
+spring:
+  application:
+    name: support_link
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/support_link?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 8081
+
+# JWT Configuration
+jwt:
+  secret: verysecretkeythatislongenoughforhs512algorithmverysecretkeythatislongenoughforhs512algorithm
+  expiration: 86400000
+
+springdoc:
+  api-docs:
+    version: openapi_3_0
+  # OAS 3.1 기능을 비활성화하여 3.0 호환성을 높임
+  model-converters:
+    deprecating-converter:
+      enabled: false

@@ -22,7 +22,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/tickets")
@@ -110,6 +109,7 @@ public class TicketController {
         return ResponseEntity.ok(TicketResponse.from(ticket));
     }
 
+    @SuppressWarnings("null")
     @PatchMapping("/{id}")
     @Operation(summary = "티켓 정보 수정 (상담원 전용)")
     @SecurityRequirement(name = "BearerAuth")

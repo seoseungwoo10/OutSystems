@@ -198,7 +198,7 @@ public class DataInitializer implements CommandLineRunner {
                 // view_count (N)
 
                 int n = data.length;
-                Long csvId = Long.parseLong(data[0]);
+                // Long csvId = Long.parseLong(data[0]);
                 String category = data[1];
                 String title = data[2];
                 Long authorId = Long.parseLong(data[n - 2]);
@@ -297,7 +297,7 @@ public class DataInitializer implements CommandLineRunner {
                 // Message might have commas. Same strategy.
 
                 int n = data.length;
-                Long csvId = Long.parseLong(data[0]);
+                // Long csvId = Long.parseLong(data[0]);
                 Long ticketId = Long.parseLong(data[1]);
                 Long authorId = Long.parseLong(data[2]);
                 String authorTypeStr = data[3];

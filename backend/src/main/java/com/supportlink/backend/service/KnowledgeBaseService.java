@@ -29,7 +29,7 @@ public class KnowledgeBaseService {
     }
 
     public KnowledgeBase createFaq(KnowledgeBase faq) {
-        return knowledgeBaseRepository.save(faq);
+        return java.util.Objects.requireNonNull(knowledgeBaseRepository.save(faq));
     }
 
     public KnowledgeBase updateFaq(Long id, KnowledgeBase faqDetails) {
@@ -38,7 +38,7 @@ public class KnowledgeBaseService {
         faq.setTitle(faqDetails.getTitle());
         faq.setContent(faqDetails.getContent());
         faq.setCategory(faqDetails.getCategory());
-        return knowledgeBaseRepository.save(faq);
+        return java.util.Objects.requireNonNull(knowledgeBaseRepository.save(faq));
     }
 
     public void deleteFaq(Long id) {
