@@ -145,7 +145,16 @@ public class TicketController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공")
     })
-    public ResponseEntity<List<TicketReplyResponse>> getReplies(@PathVariable Long id) {
+    public ResponseEntity<List<TicketReplyResponse>> getReplies(@PathVariable Long id, Authentication authentication) {
+        Ticket ticket = ticketService.getTicket(id);
+        if (!isAdminOrAgent(authentication)) {
+            User user = userRepository.findByEmail(authentication.getName())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            if (!ticket.getUser().getUserId().equals(user.getUserId())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        }
+
         List<TicketReplyResponse> responses = ticketService.getReplies(id).stream()
                 .map(TicketReplyResponse::from)
                 .toList();

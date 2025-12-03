@@ -76,6 +76,11 @@ public class FaqController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "FAQ 수정 (관리자 전용)")
+    @SecurityRequirement(name = "BearerAuth")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "수정 성공")
+    })
     public ResponseEntity<FaqResponse> updateFaq(@PathVariable Long id, @RequestBody FaqRequest request) {
         KnowledgeBase faqDetails = new KnowledgeBase();
         faqDetails.setTitle(request.getTitle());
@@ -86,6 +91,11 @@ public class FaqController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "FAQ 삭제 (관리자 전용)")
+    @SecurityRequirement(name = "BearerAuth")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "삭제 성공")
+    })
     public ResponseEntity<?> deleteFaq(@PathVariable Long id) {
         knowledgeBaseService.deleteFaq(id);
         return ResponseEntity.ok().build();
