@@ -91,4 +91,23 @@ public class AuthController {
     public ResponseEntity<?> me(Authentication authentication) {
         return ResponseEntity.ok(authentication.getPrincipal());
     }
+
+    @DeleteMapping("/me")
+    @Operation(summary = "회원 탈퇴")
+    @SecurityRequirement(name = "BearerAuth")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "회원 탈퇴 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 실패"),
+            @ApiResponse(responseCode = "404", description = "사용자 찾을 수 없음")
+    })
+    public ResponseEntity<?> withdraw(Authentication authentication) {
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        user.setIsActive(false);
+        userRepository.save(user);
+        
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -29,6 +29,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         // Try to find Agent first
         Optional<Agent> agent = agentRepository.findByEmail(email);
         if (agent.isPresent()) {
+            if (!agent.get().getIsActive()) {
+                throw new UsernameNotFoundException("Agent account is inactive");
+            }
             return new org.springframework.security.core.userdetails.User(
                     agent.get().getEmail(),
                     agent.get().getPasswordHash(),
@@ -38,6 +41,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         // Try to find User
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
+            if (!user.get().getIsActive()) {
+                throw new UsernameNotFoundException("User account is inactive");
+            }
             return new org.springframework.security.core.userdetails.User(
                     user.get().getEmail(),
                     user.get().getPasswordHash(),

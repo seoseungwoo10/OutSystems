@@ -14,4 +14,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     @Query("SELECT t FROM Ticket t WHERE (:status IS NULL OR t.status = :status) AND (:assigneeId IS NULL OR t.assignedAgent.agentId = :assigneeId)")
     List<Ticket> findAllWithFilters(@Param("status") Ticket.Status status, @Param("assigneeId") Long assigneeId);
+
+    List<Ticket> findByAssignedAgentAndStatus(com.supportlink.backend.domain.Agent agent, Ticket.Status status);
 }

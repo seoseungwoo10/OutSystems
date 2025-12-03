@@ -32,6 +32,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/api/auth/me").authenticated()
+                        .requestMatchers(HttpMethod.GET,"/api/agents/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/api/agents/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,"/api/agents/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,"/api/agents/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/faqs/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/faqs/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/faqs/**").hasRole("ADMIN")

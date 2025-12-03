@@ -30,6 +30,9 @@ public class Agent {
     @Column(nullable = false)
     private Role role;
 
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = true;
+
     public enum Role {
         AGENT, ADMIN
     }
